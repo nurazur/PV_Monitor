@@ -1,0 +1,14 @@
+# start Heizung daemon
+@reboot sudo ./term.py &
+
+# during daytime, all 5 minutes, start listening to the sunezy inverter for 4:30 minutes (10 readings)
+*/5 5-22 * * * ./sunezy.py >/dev/null 2>&1
+
+# every midnight, calculate & backup daily production. Once a week, calculate and backup weekly production
+0   0 * * * ./daily_log2.py >/dev/null 2>&1
+
+# temperature readings every 30 minutes 24/7
+*/30 * * * * ./ds18b20_log.py -d >/dev/null 2>&1
+
+# air pressure reading every 30 minutes 24/7
+1,31 * * * * ./bmp180_log.py >/dev/null 2>&1
